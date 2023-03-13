@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c35ug12xrl8p3"]
+[gd_scene load_steps=8 format=3 uid="uid://c35ug12xrl8p3"]
 
 [ext_resource type="Script" path="res://scenes/general/player.gd" id="1_2yci0"]
 
@@ -83,5 +83,3 @@ collision_layer = 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StandSpaceCheck"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 shape = SubResource("CylinderShape3D_m3kla")
-
-[connection signal="damaged" from="AvianTarget" to="." method="damage"]
