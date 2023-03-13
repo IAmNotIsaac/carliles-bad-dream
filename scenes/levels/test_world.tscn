@@ -1,0 +1,92 @@
+[gd_scene load_steps=9 format=3 uid="uid://ckcr7syimsdf8"]
+
+[ext_resource type="PackedScene" uid="uid://c35ug12xrl8p3" path="res://scenes/general/player.tscn" id="1_lqhpe"]
+[ext_resource type="Material" uid="uid://8ylcw0h1lkhg" path="res://addons/kenney_prototype_tools/materials/orange/material_01.tres" id="1_n01wf"]
+[ext_resource type="PackedScene" uid="uid://bb3emm6ug6ufd" path="res://scenes/tools/camera_target.tscn" id="2_3igf4"]
+[ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_nwolx"]
+[ext_resource type="Material" uid="uid://ddal25jay8fq1" path="res://addons/kenney_prototype_tools/materials/purple/material_01.tres" id="5_jhnqh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kgjh2"]
+
+[sub_resource type="Sky" id="Sky_y6ois"]
+sky_material = SubResource("ProceduralSkyMaterial_kgjh2")
+
+[sub_resource type="Environment" id="Environment_bc27g"]
+background_mode = 2
+sky = SubResource("Sky_y6ois")
+
+[node name="TestWorld" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bc27g")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, 0, 7, 8)
+shadow_enabled = true
+directional_shadow_mode = 1
+
+[node name="Player" parent="." instance=ExtResource("1_lqhpe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+_camera_target_path = NodePath("../CameraTarget")
+
+[node name="CameraTarget" parent="." instance=ExtResource("2_3igf4")]
+weight = 0.6
+
+[node name="DynamicCamera" parent="." instance=ExtResource("3_nwolx")]
+_target_path = NodePath("../CameraTarget")
+_current = true
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="World"]
+material_override = ExtResource("1_n01wf")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1, 0)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(10, 1, 20)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="World"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -24, 6, 3)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(2, 10, 20)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="World"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -20, 7, -1)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(2, 10, 20)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="World"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -20, 14, -1)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(2, 4, 2)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="World"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -20, 13, -1)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(2, 4, 4)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="World"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -20, 12, -1)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(2, 4, 6)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="World"]
+transform = Transform3D(-2.18557e-08, 0.707107, 0.707107, -1, -3.09086e-08, 1.09809e-22, 2.18557e-08, -0.707107, 0.707107, -16, 10, -5)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(14, 10, 20)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 0, 7)
+material_override = ExtResource("5_jhnqh")
+use_collision = true
+size = Vector3(5, 26, 5)

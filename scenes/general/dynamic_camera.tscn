@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkcm367dioe5h"]
+
+[ext_resource type="Script" path="res://scenes/general/dynamic_camera.gd" id="1_ft6hl"]
+
+[node name="DynamicCamera" type="Node3D"]
+script = ExtResource("1_ft6hl")
+
+[node name="Camera3D" type="Camera3D" parent="."]
