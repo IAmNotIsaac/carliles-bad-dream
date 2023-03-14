@@ -71,6 +71,8 @@ var speed_factor := 1.0
 ## Private methods ##
 
 func _ready() -> void:
+	Level.deferred_input.connect(_deferred_input)
+	
 	_climb_check.position.z = -_CLIMB_DISTANCE
 	_health = _MAX_HEALTH
 	if _cam_target != null:
@@ -78,7 +80,7 @@ func _ready() -> void:
 	_state.ready()
 
 
-func _input(event : InputEvent) -> void:
+func _deferred_input(event : InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if not _state.matches(States.QUICK_CLIMB):
 			_gimbal.rotation_degrees.y -= event.relative.x * Settings.camera_sensitivity

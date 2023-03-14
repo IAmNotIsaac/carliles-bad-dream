@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="dream"
-run/main_scene="res://scenes/levels/test_world.tscn"
+run/main_scene="res://scenes/general/main.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
 config/icon="res://assets/textures/icon.svg"
 
 [autoload]
 
 Settings="*res://singletons/settings.gd"
+Level="*res://singletons/level.tscn"
 
 [input]
 
