@@ -71,7 +71,8 @@ func load_real_world(path : String) -> void:
 
 
 func close_real_world() -> void:
-	pass
+	for c in _real_world_viewport.get_children(true):
+		c.queue_free()
 
 
 func load_dream_world(path : String) -> void:
@@ -81,4 +82,5 @@ func load_dream_world(path : String) -> void:
 
 
 func close_dream_world() -> void:
-	pass
+	for c in _dream_world_viewport.get_children(true):
+		c.queue_free()
