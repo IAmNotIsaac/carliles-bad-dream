@@ -79,6 +79,9 @@ func _ready() -> void:
 	_interact_cast.collision_mask = _interact_collision_mask
 	_mesh.layers = _render_layers
 	
+	_cam.rotation_degrees.x = IntersceneData.player_camera_rot_x
+	_gimbal.rotation_degrees.y = IntersceneData.player_camera_rot_y
+	
 	Level.deferred_input.connect(_deferred_input)
 	
 	_climb_check.position.z = -_CLIMB_DISTANCE
@@ -94,6 +97,9 @@ func _deferred_input(event : InputEvent) -> void:
 			_gimbal.rotation_degrees.y -= event.relative.x * Settings.camera_sensitivity
 			_cam.rotation_degrees.x -= event.relative.y * Settings.camera_sensitivity
 			_cam.rotation_degrees.x = clamp(_cam.rotation_degrees.x, -90, 90)
+			
+			IntersceneData.player_camera_rot_x = _cam.rotation_degrees.x
+			IntersceneData.player_camera_rot_y = _gimbal.rotation_degrees.y
 
 
 func _physics_process(delta : float) -> void:

@@ -19,6 +19,7 @@ config/icon="res://assets/textures/icon.svg"
 
 Settings="*res://singletons/settings.gd"
 Level="*res://singletons/level.tscn"
+IntersceneData="*res://singletons/interscene_data.gd"
 
 [input]
 
