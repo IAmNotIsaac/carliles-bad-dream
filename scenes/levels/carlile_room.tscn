@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scenes/levels/carlile_room.gd" id="1_c7cwn"]
 [ext_resource type="PackedScene" uid="uid://bb3emm6ug6ufd" path="res://scenes/tools/camera_target.tscn" id="2_pw6tk"]
 [ext_resource type="PackedScene" uid="uid://dytcxv2e76qak" path="res://assets/models/plain_wall.glb" id="2_tqchr"]
-[ext_resource type="PackedScene" uid="uid://c35ug12xrl8p3" path="res://scenes/general/player.tscn" id="3_deyno"]
+[ext_resource type="PackedScene" uid="uid://cbtw5u27asug0" path="res://scenes/general/player.tscn" id="3_deyno"]
 [ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_ifmub"]
 [ext_resource type="PackedScene" uid="uid://cu3agytdyvgsw" path="res://assets/models/carlile.glb" id="4_a8ndr"]
 [ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="5_0lhna"]

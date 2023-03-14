@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://c35ug12xrl8p3"]
+[gd_scene load_steps=9 format=3 uid="uid://cbtw5u27asug0"]
 
 [ext_resource type="Script" path="res://scenes/general/player.gd" id="1_2yci0"]
+[ext_resource type="Texture2D" uid="uid://cq56f867mbgmj" path="res://assets/textures/reticle.png" id="2_twr7j"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i4mqd"]
 radius = 0.25
@@ -83,3 +84,26 @@ collision_layer = 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StandSpaceCheck"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 shape = SubResource("CylinderShape3D_m3kla")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Reticle" type="TextureRect" parent="HUD"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_twr7j")

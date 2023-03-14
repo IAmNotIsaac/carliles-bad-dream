@@ -17,6 +17,9 @@ enum States {
 #const _Ragdoll := preload("res://src/instance/RobotRagdoll.tscn")
 #const _SFX := preload("res://src/instance/SoundEffect.tscn")
 
+const _TEXTURE_RETICLE := preload("res://assets/textures/reticle.png")
+const _TEXTURE_RETICLE_HIGHLIGHT := preload("res://assets/textures/reticle_highlight.png")
+
 const _AIR_FRICTION := 0.1
 const _MAX_HEALTH := 100.0
 const _HEAL_RATE := 20.0 # health per second
@@ -71,6 +74,7 @@ var speed_factor := 1.0
 @onready var _crawl_col := $CrawlCollision
 @onready var _stand_space_check := $StandSpaceCheck
 @onready var _mesh := $MeshInstance3D
+@onready var _reticle := $HUD/Reticle
 
 
 ## Private methods ##
@@ -216,11 +220,13 @@ func _air_movement(delta : float) -> void:
 
 
 func _permit_interact() -> void:
-	if Input.is_action_pressed("interact"):
-		pass
-		var col = _interact_cast.get_collider()
-		if col is InteractArea:
-			col.interact(not Input.is_action_just_pressed("interact"))
+	var col = _interact_cast.get_collider()
+	if col is InteractArea:
+		_reticle.texture = _TEXTURE_RETICLE_HIGHLIGHT
+		if Input.is_action_pressed("interact"):
+				col.interact(not Input.is_action_just_pressed("interact"))
+	else:
+		_reticle.texture = _TEXTURE_RETICLE
 
 
 func _crawl_collision() -> void:

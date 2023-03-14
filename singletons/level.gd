@@ -74,6 +74,7 @@ func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Co
 ## Public methods
 
 func load_real_world(path : String) -> void:
+	close_real_world()
 	if ResourceLoader.exists(path):
 		_load_paths["real"] = path
 		await get_tree().create_timer(1.0).timeout
@@ -86,6 +87,7 @@ func close_real_world() -> void:
 
 
 func load_dream_world(path : String) -> void:
+	close_dream_world()
 	if ResourceLoader.exists(path):
 		_load_paths["dream"] = path
 		ResourceLoader.load_threaded_request(path)

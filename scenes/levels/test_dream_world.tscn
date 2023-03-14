@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://ccw5r261rvd"]
 
-[ext_resource type="PackedScene" uid="uid://c35ug12xrl8p3" path="res://scenes/general/player.tscn" id="1_ouv60"]
+[ext_resource type="PackedScene" uid="uid://cbtw5u27asug0" path="res://scenes/general/player.tscn" id="1_ouv60"]
 [ext_resource type="PackedScene" uid="uid://bb3emm6ug6ufd" path="res://scenes/tools/camera_target.tscn" id="2_mqkcl"]
 [ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_kjt45"]
 [ext_resource type="Material" uid="uid://8ylcw0h1lkhg" path="res://addons/kenney_prototype_tools/materials/orange/material_01.tres" id="4_4q6jl"]

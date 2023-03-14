@@ -35,3 +35,7 @@ func interact(continuous : bool) -> void:
 	
 	interacted_with.emit()
 	_activation_count += 1
+
+
+func reset_activation_count() -> void:
+	_activation_count = 0
