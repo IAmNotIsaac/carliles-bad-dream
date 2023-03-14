@@ -4,6 +4,16 @@ extends Node
 signal deferred_input(event : InputEvent)
 
 
+const LEVELS := {
+	"REAL": {
+		"TEST_WORLD": "res://scenes/levels/test_world.tscn",
+		"CARLILE_ROOM": "res://scenes/levels/carlile_room.tscn",
+	},
+	"DREAM": {
+		"TEST_DREAM_WORLD": "res://scenes/levels/test_dream_world.tscn"
+	}
+}
+
 var _load_paths := {
 	"real": "",
 	"dream": ""
@@ -24,7 +34,7 @@ var _load_paths := {
 ## Private methods
 
 func _ready() -> void:
-	load_real_world("res://scenes/levels/test_world.tscn")
+	load_real_world("res://scenes/levels/carlile_room.tscn")
 
 
 func _input(event : InputEvent) -> void:

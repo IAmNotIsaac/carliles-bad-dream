@@ -83,3 +83,18 @@ action={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":2,"pressed":false,"double_click":false,"script":null)
 ]
 }
+
+[layer_names]
+
+3d_render/layer_1="real_world"
+3d_render/layer_2="real_player"
+3d_render/layer_11="dream_world"
+3d_render/layer_12="dream_player"
+3d_physics/layer_1="real_world"
+3d_physics/layer_2="real_player"
+3d_physics/layer_3="real_interact"
+3d_physics/layer_4="real_barrier"
+3d_physics/layer_17="dream_world"
+3d_physics/layer_18="dream_player"
+3d_physics/layer_19="dream_interact"
+3d_physics/layer_20="dream_barrier"

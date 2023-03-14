@@ -8,12 +8,12 @@
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kgjh2"]
 
-[sub_resource type="Sky" id="Sky_y6ois"]
+[sub_resource type="Sky" id="Sky_gorfh"]
 sky_material = SubResource("ProceduralSkyMaterial_kgjh2")
 
 [sub_resource type="Environment" id="Environment_bc27g"]
 background_mode = 2
-sky = SubResource("Sky_y6ois")
+sky = SubResource("Sky_gorfh")
 
 [node name="TestWorld" type="Node3D"]
 

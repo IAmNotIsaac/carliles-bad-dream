@@ -17,12 +17,6 @@ enum States {
 #const _Ragdoll := preload("res://src/instance/RobotRagdoll.tscn")
 #const _SFX := preload("res://src/instance/SoundEffect.tscn")
 
-const _GRAVITY := 20.0
-const _JUMP_FORCE := 7.0
-const _WALK_SPEED := 7.0
-const _RUN_SPEED := 4.0
-const _AIR_SPEED := 14.0
-const _CRAWL_SPEED := 2.0
 const _AIR_FRICTION := 0.1
 const _MAX_HEALTH := 100.0
 const _HEAL_RATE := 20.0 # health per second
@@ -40,6 +34,17 @@ const _QUICK_CLIMB_SPEED := 2.0
 const _QUICK_CLIMB_FDIST := 2.0
 const _COYOTE_TIME := 0.25
 
+@export var _gravity := 20.0
+@export var _jump_force := 7.0
+@export var _walk_speed := 7.0
+@export var _run_speed := 4.0
+@export var _air_speed := 14.0
+@export var _crawl_speed := 2.0
+@export var _wallrun_limit := 69420
+@export_flags_3d_physics var _interact_collision_mask := 1 | 4
+@export_flags_3d_render var _render_layers := 2
+@export_node_path("CameraTarget") var _camera_target_path : NodePath
+
 var _state := StateMachine.new(self, States, States.DEFAULT)
 var _wallrun_cast : RayCast3D
 var _health := _MAX_HEALTH
@@ -49,10 +54,9 @@ var _last_step_sound := 0
 var _cam_v_offset := 0.0
 var _cam_h_offset := 0.0
 var _jump_count := 0
+var _wallrun_count := 0
 
 var speed_factor := 1.0
-
-@export_node_path("CameraTarget") var _camera_target_path : NodePath
 
 @onready var _cam_target : CameraTarget = get_node_or_null(_camera_target_path)
 @onready var _gimbal := $Gimbal
@@ -66,17 +70,21 @@ var speed_factor := 1.0
 @onready var _stand_col := $BodyCollision
 @onready var _crawl_col := $CrawlCollision
 @onready var _stand_space_check := $StandSpaceCheck
+@onready var _mesh := $MeshInstance3D
 
 
 ## Private methods ##
 
 func _ready() -> void:
+	_interact_cast.collision_mask = _interact_collision_mask
+	_mesh.layers = _render_layers
+	
 	Level.deferred_input.connect(_deferred_input)
 	
 	_climb_check.position.z = -_CLIMB_DISTANCE
 	_health = _MAX_HEALTH
 	if _cam_target != null:
-		_cam_target.set_cull_mask(_cam_target.get_cull_mask() & ~2)
+		_cam_target.set_cull_mask(_cam_target.get_cull_mask() & ~_mesh.layers)
 	_state.ready()
 
 
@@ -189,13 +197,13 @@ func _air_movement(delta : float) -> void:
 	
 	var move_forward = Vector3(sin(theta) * input.y, 0.0, cos(theta) * input.y)
 	var move_strafe = Vector3(cos(-theta) * input.x, 0.0, sin(-theta) * input.x)
-	var accel := _GRAVITY * delta
+	var accel := _gravity * delta
 	
 	var v := Vector2(velocity.x, velocity.z)
-	v = v.limit_length(_AIR_SPEED)
+	v = v.limit_length(_air_speed)
 	velocity = Vector3(v.x, velocity.y, v.y)
-#	velocity.x = clamp(velocity.x + (move_forward.x + move_strafe.x) * _AIR_FRICTION, -_RUN_SPEED * speed_factor * max(_FAST_SPEED, 1.0), _RUN_SPEED * speed_factor * max(_FAST_SPEED, 1.0))
-#	velocity.z = clamp(velocity.z + (move_forward.z + move_strafe.z) * _AIR_FRICTION, -_RUN_SPEED * speed_factor * max(_FAST_SPEED, 1.0), _RUN_SPEED * speed_factor * max(_FAST_SPEED, 1.0))
+#	velocity.x = clamp(velocity.x + (move_forward.x + move_strafe.x) * _AIR_FRICTION, -_run_speed * speed_factor * max(_FAST_SPEED, 1.0), _run_speed * speed_factor * max(_FAST_SPEED, 1.0))
+#	velocity.z = clamp(velocity.z + (move_forward.z + move_strafe.z) * _AIR_FRICTION, -_run_speed * speed_factor * max(_FAST_SPEED, 1.0), _run_speed * speed_factor * max(_FAST_SPEED, 1.0))
 	velocity.y -= accel
 	
 	move_and_slide()
@@ -206,7 +214,7 @@ func _permit_interact() -> void:
 		pass
 		var col = _interact_cast.get_collider()
 		if col is InteractArea:
-			col.interact()
+			col.interact(not Input.is_action_just_pressed("interact"))
 
 
 func _crawl_collision() -> void:
@@ -222,14 +230,14 @@ func _stand_collision() -> void:
 ## State processes ##
 
 func _sp_GROUND(delta : float) -> void:
-	_ground_movement(delta, _WALK_SPEED if Input.is_action_pressed("walk") else _RUN_SPEED)
+	_ground_movement(delta, _walk_speed if Input.is_action_pressed("walk") else _run_speed)
 	_permit_interact()
 	
 	if Input.is_action_just_pressed("crawl"):
 		_state.switch(States.CRAWL)
 	
 	if Input.is_action_pressed("walk"):
-		if await _can_quick_climb() and is_equal_approx(velocity.length(), _RUN_SPEED * _FAST_SPEED):
+		if await _can_quick_climb() and is_equal_approx(velocity.length(), _run_speed * _FAST_SPEED):
 			_state.switch(States.QUICK_CLIMB)
 			return
 	
@@ -248,7 +256,7 @@ func _sp_GROUND(delta : float) -> void:
 
 
 func _sp_CRAWL(delta : float) -> void:
-	_ground_movement(delta, _CRAWL_SPEED)
+	_ground_movement(delta, _crawl_speed)
 	_permit_interact()
 	
 	if Input.is_action_just_pressed("crawl"):
@@ -275,7 +283,7 @@ func _sp_LAND(delta : float) -> void:
 
 func _sp_AIR(delta : float) -> void:
 	var impact_vel := velocity.y
-	var accel := _GRAVITY * delta
+	var accel := _gravity * delta
 	
 	_air_movement(delta)
 	_permit_interact()
@@ -302,7 +310,7 @@ func _sp_AIR(delta : float) -> void:
 					"raycast": _wallrunr_check,
 					"input": "move_right"
 			} ]:
-				if c["raycast"].get_collider() and Input.is_action_pressed(c["input"]):
+				if c["raycast"].get_collider() and Input.is_action_pressed(c["input"]) and _wallrun_count < _wallrun_limit:
 					_wallrun_cast = c["raycast"]
 					_state.switch(States.WALLRUN)
 					return
@@ -332,7 +340,7 @@ func _sp_WALLRUN(_delta : float) -> void:
 		return
 	
 	if Input.is_action_just_released("jump"):
-		velocity = normal * _JUMP_FORCE
+		velocity = normal * _jump_force
 		_state.switch(States.JUMP)
 		return
 	
@@ -370,6 +378,7 @@ func _sl_CRAWL() -> void:
 func _sl_WALLRUN() -> void:
 	var normal := _wallrun_cast.get_collision_normal()
 	_wallrun_tracker.target_position = -Vector3(normal.x, 0.0, normal.z)
+	_wallrun_count += 1
 
 
 func _su_WALLRUN() -> void:
@@ -383,6 +392,7 @@ func _sl_LAND() -> void:
 
 func _sl_GROUND() -> void:
 	_jump_count = 0
+	_wallrun_count = 0
 	if _stand_space_check.has_overlapping_bodies():
 		_state.switch(States.CRAWL)
 		return
@@ -397,7 +407,7 @@ func _su_GROUND() -> void:
 
 func _sl_JUMP() -> void:
 	_jump_count += 1
-	velocity.y = _JUMP_FORCE
+	velocity.y = _jump_force
 	_state.switch(States.AIR)
 
 

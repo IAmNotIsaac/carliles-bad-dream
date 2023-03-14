@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://ccw5r261rvd"]
+
+[ext_resource type="PackedScene" uid="uid://c35ug12xrl8p3" path="res://scenes/general/player.tscn" id="1_ouv60"]
+[ext_resource type="PackedScene" uid="uid://bb3emm6ug6ufd" path="res://scenes/tools/camera_target.tscn" id="2_mqkcl"]
+[ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_kjt45"]
+[ext_resource type="Material" uid="uid://8ylcw0h1lkhg" path="res://addons/kenney_prototype_tools/materials/orange/material_01.tres" id="4_4q6jl"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_871fv"]
+
+[sub_resource type="Sky" id="Sky_ntqpv"]
+sky_material = SubResource("ProceduralSkyMaterial_871fv")
+
+[sub_resource type="Environment" id="Environment_3j3bj"]
+background_mode = 2
+sky = SubResource("Sky_ntqpv")
+
+[node name="TestDreamWorld" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_ouv60")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
+collision_layer = 131072
+collision_mask = 589824
+_wallrun_limit = 0
+_interact_collision_mask = 327680
+_render_layers = 2048
+_camera_target_path = NodePath("../CameraTarget")
+
+[node name="CameraTarget" parent="." instance=ExtResource("2_mqkcl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+cull_mask = 1047552
+weight = 0.6
+
+[node name="DynamicCamera" parent="." instance=ExtResource("3_kjt45")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+_target_path = NodePath("../CameraTarget")
+_current = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+layers = 1024
+material_override = ExtResource("4_4q6jl")
+use_collision = true
+collision_layer = 65536
+collision_mask = 0
+size = Vector3(14, 1, 14)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3j3bj")
