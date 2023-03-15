@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://d23hsex5h1v4g"]
+[gd_scene load_steps=26 format=3 uid="uid://d23hsex5h1v4g"]
 
 [ext_resource type="PackedScene" uid="uid://daxni8he6dwsm" path="res://assets/models/bed.glb" id="1_7pydp"]
 [ext_resource type="Script" path="res://scenes/levels/carlile_room.gd" id="1_c7cwn"]
@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://dwp8je3u571c0" path="res://assets/models/door_wall.glb" id="11_jkvbc"]
 [ext_resource type="PackedScene" uid="uid://bse0j0ohgsor5" path="res://assets/models/door.glb" id="12_wrcht"]
 [ext_resource type="PackedScene" uid="uid://cboxgrstlepby" path="res://assets/models/light.glb" id="13_rtgam"]
-[ext_resource type="Script" path="res://scenes/logic/distributor.gd" id="16_skney"]
 
 [sub_resource type="Environment" id="Environment_2bs8j"]
 
@@ -255,7 +254,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.85, 1, -1)
 mesh = SubResource("BoxMesh_kjith")
 
-[node name="Node3D" type="Node3D" parent="."]
-script = ExtResource("16_skney")
-
 [connection signal="interacted_with" from="EnterCarlileDream" to="." method="_on_enter_carlile_dream_interacted_with"]
+[connection signal="visibility_changed" from="Lights/CeilingLight" to="." method="_on_ceiling_light_visibility_changed"]

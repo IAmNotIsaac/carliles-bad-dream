@@ -19,6 +19,11 @@ var _load_paths := {
 	"dream": ""
 }
 
+var root_nodes := {
+	"real": null,
+	"dream": null,
+}
+
 @onready var _ui := $UI
 @onready var _game := $Game
 @onready var _real_world_container := $%RealWorldContainer
@@ -42,14 +47,14 @@ func _input(event : InputEvent) -> void:
 
 
 func _process(_delta : float) -> void:
-	_load_level("real", _real_progress_bar, _real_load_screen, _real_world_viewport)
-	_load_level("dream", _dream_progress_bar, _dream_load_screen, _dream_world_viewport)
+	_load_level("real", _real_progress_bar, _real_load_screen, _real_world_viewport, "real")
+	_load_level("dream", _dream_progress_bar, _dream_load_screen, _dream_world_viewport, "dream")
 	
 	_real_world_container.set_visible(_real_world_viewport.get_children(true) != [] or _load_paths["real"] != "")
 	_dream_world_container.set_visible(_dream_world_viewport.get_children(true) != [] or _load_paths["dream"] != "")
 
 
-func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Control, root_node : Node) -> void:
+func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Control, viewport_node : Node, root_key : String) -> void:
 	var progress := []
 	var load_status := ResourceLoader.load_threaded_get_status(_load_paths[path_key], progress)
 	match load_status:
@@ -68,7 +73,9 @@ func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Co
 			if not res is PackedScene:
 				push_error("Attempted loading level that is not a PackedScene")
 				return
-			root_node.add_child(res.instantiate())
+			var root : Node3D = res.instantiate()
+			viewport_node.add_child(root)
+			root_nodes[root_key] = root
 
 
 ## Public methods
@@ -82,6 +89,7 @@ func load_real_world(path : String) -> void:
 
 
 func close_real_world() -> void:
+	root_nodes.real = null
 	for c in _real_world_viewport.get_children(true):
 		c.queue_free()
 
@@ -94,5 +102,6 @@ func load_dream_world(path : String) -> void:
 
 
 func close_dream_world() -> void:
+	root_nodes.dream = null
 	for c in _dream_world_viewport.get_children(true):
 		c.queue_free()

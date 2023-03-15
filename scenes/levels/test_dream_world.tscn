@@ -1,20 +1,43 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccw5r261rvd"]
+[gd_scene load_steps=12 format=3 uid="uid://ccw5r261rvd"]
 
+[ext_resource type="Script" path="res://scenes/levels/test_dream_world.gd" id="1_lb2it"]
 [ext_resource type="PackedScene" uid="uid://cbtw5u27asug0" path="res://scenes/general/player.tscn" id="1_ouv60"]
 [ext_resource type="PackedScene" uid="uid://bb3emm6ug6ufd" path="res://scenes/tools/camera_target.tscn" id="2_mqkcl"]
 [ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_kjt45"]
 [ext_resource type="Material" uid="uid://8ylcw0h1lkhg" path="res://addons/kenney_prototype_tools/materials/orange/material_01.tres" id="4_4q6jl"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_871fv"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j12s2"]
+sun_curve = 0.369343
 
-[sub_resource type="Sky" id="Sky_ntqpv"]
-sky_material = SubResource("ProceduralSkyMaterial_871fv")
+[sub_resource type="Sky" id="Sky_re5pg"]
+sky_material = SubResource("ProceduralSkyMaterial_j12s2")
 
-[sub_resource type="Environment" id="Environment_3j3bj"]
+[sub_resource type="Environment" id="Environment_ttcm7"]
 background_mode = 2
-sky = SubResource("Sky_ntqpv")
+sky = SubResource("Sky_re5pg")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j653c"]
+sky_top_color = Color(0.0352941, 0.0627451, 0.219608, 1)
+sky_horizon_color = Color(0.0862745, 0.0745098, 0.203922, 1)
+ground_bottom_color = Color(0.00392157, 0, 0.203922, 1)
+ground_horizon_color = Color(0.0823529, 0.0745098, 0.211765, 1)
+sun_angle_max = 0.0
+
+[sub_resource type="Sky" id="Sky_3mwsp"]
+sky_material = SubResource("ProceduralSkyMaterial_j653c")
+
+[sub_resource type="Environment" id="Environment_odlcf"]
+background_mode = 2
+sky = SubResource("Sky_3mwsp")
 
 [node name="TestDreamWorld" type="Node3D"]
+script = ExtResource("1_lb2it")
+_light_environment = SubResource("Environment_ttcm7")
+_dark_environment = SubResource("Environment_odlcf")
+_sun_path = NodePath("Sun")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.304382, 0.727341, -0.615082, -0.571247, 0.377339, 0.728898, 0.762252, 0.573227, 0.300636, 0, 7, 0)
 
 [node name="Player" parent="." instance=ExtResource("1_ouv60")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
@@ -41,7 +64,4 @@ material_override = ExtResource("4_4q6jl")
 use_collision = true
 collision_layer = 65536
 collision_mask = 0
-size = Vector3(14, 1, 14)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_3j3bj")
+size = Vector3(40, 1, 40)
