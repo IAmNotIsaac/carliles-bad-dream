@@ -61,6 +61,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
 _jump_force = 3.0
 _walk_speed = 2.0
 _run_speed = 1.0
+_crawl_speed = 0.35
 _wallrun_limit = 0
 _camera_target_path = NodePath("../CameraTarget")
 
@@ -245,7 +246,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -4)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 1)
 
 [node name="door" parent="Visual" instance=ExtResource("12_wrcht")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 1)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2, 1, 1)
 
 [node name="light2" parent="Visual" instance=ExtResource("13_rtgam")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -2)

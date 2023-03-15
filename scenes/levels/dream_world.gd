@@ -21,7 +21,7 @@ enum EnvironmentMode {
 ## Private methods
 
 func _ready() -> void:
-	environment_mode = bool_to_environment_mode(Level.root_nodes.real.is_light())
+	environment_mode = DreamWorld.bool_to_environment_mode(Level.root_nodes.real.is_light())
 	_update_environment()
 
 

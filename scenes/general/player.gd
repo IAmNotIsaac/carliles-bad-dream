@@ -80,6 +80,8 @@ var speed_factor := 1.0
 ## Private methods ##
 
 func _ready() -> void:
+	IntersceneData.force_player_state.connect(_on_force_state)
+	
 	_interact_cast.collision_mask = _interact_collision_mask
 	_mesh.layers = _render_layers
 	
@@ -93,6 +95,13 @@ func _ready() -> void:
 	if _cam_target != null:
 		_cam_target.set_cull_mask(_cam_target.get_cull_mask() & ~_mesh.layers)
 	_state.ready()
+	
+	if IntersceneData.player_crawling:
+		_state.switch(States.CRAWL)
+
+
+func _on_force_state(state : States) -> void:
+	_state.switch(state)
 
 
 func _deferred_input(event : InputEvent) -> void:
@@ -209,11 +218,9 @@ func _air_movement(delta : float) -> void:
 	var move_strafe = Vector3(cos(-theta) * input.x, 0.0, sin(-theta) * input.x)
 	var accel := _gravity * delta
 	
-	var v := Vector2(velocity.x, velocity.z)
+	var v := Vector2(velocity.x + (move_forward.x + move_strafe.x) * _AIR_FRICTION, velocity.z + (move_forward.z + move_strafe.z) * _AIR_FRICTION)
 	v = v.limit_length(_air_speed)
 	velocity = Vector3(v.x, velocity.y, v.y)
-#	velocity.x = clamp(velocity.x + (move_forward.x + move_strafe.x) * _AIR_FRICTION, -_run_speed * speed_factor * max(_FAST_SPEED, 1.0), _run_speed * speed_factor * max(_FAST_SPEED, 1.0))
-#	velocity.z = clamp(velocity.z + (move_forward.z + move_strafe.z) * _AIR_FRICTION, -_run_speed * speed_factor * max(_FAST_SPEED, 1.0), _run_speed * speed_factor * max(_FAST_SPEED, 1.0))
 	velocity.y -= accel
 	
 	move_and_slide()
@@ -273,9 +280,12 @@ func _sp_CRAWL(delta : float) -> void:
 	
 	if Input.is_action_just_pressed("crawl"):
 		_state.switch(States.GROUND)
+#		IntersceneData.force_player_state.emit(States.GROUND)
+		return
 	
 	if not is_on_floor():
-		_state.switch(States.AIR)
+		IntersceneData.force_player_state.emit(States.AIR)
+		return
 
 
 func _sp_LAND(delta : float) -> void:
@@ -383,8 +393,13 @@ func _sl_DEFAULT() -> void:
 
 
 func _sl_CRAWL() -> void:
+	IntersceneData.player_crawling = true
 	_crawl_collision()
 	_cam.position.y = _CRAWL_CAM_HEIGHT
+
+
+func _su_CRAWL() -> void:
+	IntersceneData.player_crawling = false
 
 
 func _sl_WALLRUN() -> void:
