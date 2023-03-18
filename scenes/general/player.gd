@@ -48,7 +48,7 @@ const _COYOTE_TIME := 0.25
 @export_flags_3d_render var _render_layers := 2
 @export_node_path("CameraTarget") var _camera_target_path : NodePath
 
-var _state := StateMachine.new(self, States, States.DEFAULT)
+var state := StateMachine.new(self, States, States.DEFAULT)
 var _wallrun_cast : RayCast3D
 var _health := _MAX_HEALTH
 var _last_damage_time := 0
@@ -94,19 +94,19 @@ func _ready() -> void:
 	_health = _MAX_HEALTH
 	if _cam_target != null:
 		_cam_target.set_cull_mask(_cam_target.get_cull_mask() & ~_mesh.layers)
-	_state.ready()
+	state.ready()
 	
 	if IntersceneData.player_crawling:
-		_state.switch(States.CRAWL)
+		state.switch(States.CRAWL)
 
 
-func _on_force_state(state : States) -> void:
-	_state.switch(state)
+func _on_force_state(state_ : States) -> void:
+	state.switch(state_)
 
 
 func _deferred_input(event : InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		if not _state.matches(States.QUICK_CLIMB):
+		if not state.matches(States.QUICK_CLIMB):
 			_gimbal.rotation_degrees.y -= event.relative.x * Settings.camera_sensitivity
 			_cam.rotation_degrees.x -= event.relative.y * Settings.camera_sensitivity
 			_cam.rotation_degrees.x = clamp(_cam.rotation_degrees.x, -90, 90)
@@ -116,14 +116,14 @@ func _deferred_input(event : InputEvent) -> void:
 
 
 func _physics_process(delta : float) -> void:
-	_state.process(delta)
+	state.process(delta)
 	_controller_look()
 	_camera_tilt()
 	_update_camera_target()
 
 
 func _controller_look() -> void:
-	if not _state.matches(States.CLIMB):
+	if not state.matches(States.CLIMB):
 		var input := Vector2(
 			Input.get_action_strength("look_right") - Input.get_action_strength("look_left"),
 			Input.get_action_strength("look_down") - Input.get_action_strength("look_up")
@@ -252,25 +252,25 @@ func _sp_GROUND(delta : float) -> void:
 	_ground_movement(delta, _walk_speed if Input.is_action_pressed("walk") else _run_speed)
 	_permit_interact()
 	
-	if Input.is_action_just_pressed("crawl"):
-		_state.switch(States.CRAWL)
+	if IntersceneData.player_crawling:
+		state.switch(States.CRAWL)
 	
 	if Input.is_action_pressed("walk"):
 		if await _can_quick_climb() and is_equal_approx(velocity.length(), _run_speed * _FAST_SPEED):
-			_state.switch(States.QUICK_CLIMB)
+			state.switch(States.QUICK_CLIMB)
 			return
 	
 	if Input.is_action_just_pressed("jump"):
 		if await _can_climb():
-			_state.switch(States.CLIMB)
+			state.switch(States.CLIMB)
 			return
 	
 	elif Input.is_action_pressed("jump"):
-		_state.switch(States.JUMP)
+		state.switch(States.JUMP)
 		return
 	
 	if not is_on_floor():
-		_state.switch(States.AIR)
+		state.switch(States.AIR)
 		return
 
 
@@ -278,9 +278,8 @@ func _sp_CRAWL(delta : float) -> void:
 	_ground_movement(delta, _crawl_speed)
 	_permit_interact()
 	
-	if Input.is_action_just_pressed("crawl"):
-		_state.switch(States.GROUND)
-#		IntersceneData.force_player_state.emit(States.GROUND)
+	if not IntersceneData.player_crawling:
+		state.switch(States.GROUND)
 		return
 	
 	if not is_on_floor():
@@ -292,14 +291,14 @@ func _sp_LAND(delta : float) -> void:
 	_cam_v_offset = max(_cam_v_offset - 2.0 * delta, -0.2)
 	_permit_interact()
 	
-	if _state.get_state_time() > 0.1:
-		_state.switch(States.GROUND)
+	if state.get_state_time() > 0.1:
+		state.switch(States.GROUND)
 		return
 	
 	move_and_slide()
 	
 	if Input.is_action_pressed("jump"):
-		_state.switch(States.JUMP)
+		state.switch(States.JUMP)
 		return
 
 
@@ -312,16 +311,16 @@ func _sp_AIR(delta : float) -> void:
 	
 	if Input.is_action_pressed("jump"):
 		if await _can_climb():
-			_state.switch(States.CLIMB)
+			state.switch(States.CLIMB)
 			return
 	
 	if is_on_floor():
-		_state.switch(States.LAND if impact_vel < -accel - 0.1 else States.GROUND)
+		state.switch(States.LAND if impact_vel < -accel - 0.1 else States.GROUND)
 		return
 	
 	if Input.is_action_just_pressed("jump"):
-		if _state.get_state_time() < _COYOTE_TIME and not _jump_count:
-			_state.switch(States.JUMP)
+		if state.get_state_time() < _COYOTE_TIME and not _jump_count:
+			state.switch(States.JUMP)
 			return
 		
 		else:
@@ -334,7 +333,7 @@ func _sp_AIR(delta : float) -> void:
 			} ]:
 				if c["raycast"].get_collider() and Input.is_action_pressed(c["input"]) and _wallrun_count < _wallrun_limit:
 					_wallrun_cast = c["raycast"]
-					_state.switch(States.WALLRUN)
+					state.switch(States.WALLRUN)
 					return
 
 
@@ -358,16 +357,16 @@ func _sp_WALLRUN(_delta : float) -> void:
 	
 	if not _wallrun_tracker.get_collider():
 		velocity = forvel
-		_state.switch(States.JUMP)
+		state.switch(States.JUMP)
 		return
 	
 	if Input.is_action_just_released("jump"):
 		velocity = normal * _jump_force
-		_state.switch(States.JUMP)
+		state.switch(States.JUMP)
 		return
 	
 	if is_on_floor():
-		_state.switch(States.GROUND)
+		state.switch(States.GROUND)
 		return
 
 
@@ -379,7 +378,7 @@ func _sp_DEAD(_delta : float) -> void:
 
 func _sl_DEFAULT() -> void:
 	if _stand_space_check.has_overlapping_bodies():
-		_state.switch(States.CRAWL)
+		state.switch(States.CRAWL)
 		return
 	
 	_stand_collision()
@@ -387,9 +386,9 @@ func _sl_DEFAULT() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	if is_on_floor():
-		_state.switch(States.GROUND)
+		state.switch(States.GROUND)
 	else:
-		_state.switch(States.AIR)
+		state.switch(States.AIR)
 
 
 func _sl_CRAWL() -> void:
@@ -421,7 +420,7 @@ func _sl_GROUND() -> void:
 	_jump_count = 0
 	_wallrun_count = 0
 	if _stand_space_check.has_overlapping_bodies():
-		_state.switch(States.CRAWL)
+		state.switch(States.CRAWL)
 		return
 	
 	_stand_collision()
@@ -435,7 +434,7 @@ func _su_GROUND() -> void:
 func _sl_JUMP() -> void:
 	_jump_count += 1
 	velocity.y = _jump_force
-	_state.switch(States.AIR)
+	state.switch(States.AIR)
 
 
 func _sl_CLIMB() -> void:
@@ -470,7 +469,7 @@ func _sl_CLIMB() -> void:
 #	_cam.rotation = cam_rot
 	global_position = target_position
 	velocity = Vector3.ZERO
-	_state.switch(States.DEFAULT)
+	state.switch(States.DEFAULT)
 
 
 func _sl_QUICK_CLIMB() -> void:
@@ -503,7 +502,7 @@ func _sl_QUICK_CLIMB() -> void:
 	_cam.position = cam_pos
 	_cam.rotation = cam_rot
 	global_position = target_position
-	_state.switch(States.DEFAULT)
+	state.switch(States.DEFAULT)
 
 
 func _sl_DEAD() -> void:
@@ -513,7 +512,7 @@ func _sl_DEAD() -> void:
 ## Public methods ##
 
 func damage(damage_data : Damage) -> void:
-	match _state:
+	match state:
 		States.CLIMB:
 			if damage_data.is_avian():
 				return
@@ -527,8 +526,8 @@ func damage(damage_data : Damage) -> void:
 
 
 func die() -> void:
-	_state.switch(States.DEAD)
+	state.switch(States.DEAD)
 
 
 func is_alive() -> bool:
-	return not _state.matches(States.DEAD)
+	return not state.matches(States.DEAD)

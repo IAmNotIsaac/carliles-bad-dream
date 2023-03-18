@@ -48,7 +48,7 @@ func toggle_light() -> void:
 
 
 func set_light(light : bool) -> void:
-	environment_mode = bool_to_environment_mode(light)
+	environment_mode = DreamWorld.bool_to_environment_mode(light)
 
 
 static func bool_to_environment_mode(is_light : bool) -> EnvironmentMode:

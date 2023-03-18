@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://d23hsex5h1v4g"]
+[gd_scene load_steps=25 format=3 uid="uid://d23hsex5h1v4g"]
 
 [ext_resource type="PackedScene" uid="uid://daxni8he6dwsm" path="res://assets/models/bed.glb" id="1_7pydp"]
 [ext_resource type="Script" path="res://scenes/levels/carlile_room.gd" id="1_c7cwn"]
@@ -10,14 +10,16 @@
 [ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="5_0lhna"]
 [ext_resource type="Script" path="res://scenes/logic/visibility_toggler.gd" id="6_30ivq"]
 [ext_resource type="PackedScene" uid="uid://db5bjr4n61wd1" path="res://assets/models/ceiling.glb" id="6_dblcb"]
-[ext_resource type="PackedScene" uid="uid://cq1eyjm8m6n81" path="res://scenes/tools/interact_area.tscn" id="6_oa751"]
 [ext_resource type="PackedScene" uid="uid://bmkk1qotb21wy" path="res://scenes/tools/editor_logic.tscn" id="6_snqt7"]
 [ext_resource type="PackedScene" uid="uid://dtgbl0ex1keaf" path="res://assets/models/floor.glb" id="7_d7pxw"]
+[ext_resource type="PackedScene" uid="uid://c3wlamvxgqr38" path="res://scenes/general/light_switch.tscn" id="8_2l8f0"]
 [ext_resource type="PackedScene" uid="uid://dwp8je3u571c0" path="res://assets/models/door_wall.glb" id="11_jkvbc"]
 [ext_resource type="PackedScene" uid="uid://bse0j0ohgsor5" path="res://assets/models/door.glb" id="12_wrcht"]
 [ext_resource type="PackedScene" uid="uid://cboxgrstlepby" path="res://assets/models/light.glb" id="13_rtgam"]
 
 [sub_resource type="Environment" id="Environment_2bs8j"]
+ambient_light_source = 2
+ambient_light_color = Color(0.172549, 0.172549, 0.172549, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gsq7c"]
 billboard_mode = 3
@@ -34,9 +36,6 @@ text = "Z"
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.258242, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_drfnw"]
-size = Vector3(0.1, 0.1, 0.1)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_ep5f2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6deoq"]
@@ -47,9 +46,6 @@ size = Vector3(2, 3, 6)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o02mo"]
 size = Vector3(1.66443, 3.17684, 3.63736)
-
-[sub_resource type="BoxMesh" id="BoxMesh_kjith"]
-size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CarlileRoom" type="Node3D"]
 script = ExtResource("1_c7cwn")
@@ -95,13 +91,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2)
 script = ExtResource("6_30ivq")
 _target_path = NodePath("../Lights/CeilingLight")
 
-[node name="ToggleLight" parent="." instance=ExtResource("6_oa751")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.85, 1, -1)
+[node name="LightSwitch" parent="." instance=ExtResource("8_2l8f0")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 2.9, 1, -1)
 _logic_path = NodePath("../LightToggler")
-mode = 1
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ToggleLight"]
-shape = SubResource("BoxShape3D_drfnw")
+_start_off = true
 
 [node name="EnterCarlileDream" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, -4)
@@ -251,10 +244,6 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2, 1, 
 
 [node name="light2" parent="Visual" instance=ExtResource("13_rtgam")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -2)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.85, 1, -1)
-mesh = SubResource("BoxMesh_kjith")
 
 [connection signal="interacted_with" from="EnterCarlileDream" to="." method="_on_enter_carlile_dream_interacted_with"]
 [connection signal="visibility_changed" from="Lights/CeilingLight" to="." method="_on_ceiling_light_visibility_changed"]

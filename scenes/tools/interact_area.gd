@@ -10,10 +10,10 @@ enum Mode {
 	SINGULAR
 }
 
-@export_node_path("Logic") var _logic_path : NodePath
+@export_node_path("Logic") var logic_path : NodePath
 @export var mode : Mode = Mode.CONTINUOUS
 
-@onready var _logic := get_node_or_null(_logic_path)
+@onready var logic := get_node_or_null(logic_path)
 
 var _activation_count := 0
 
@@ -30,8 +30,8 @@ func interact(continuous : bool) -> void:
 			if _activation_count > 0:
 				return
 	
-	if _logic != null:
-		_logic.activate()
+	if logic != null:
+		logic.activate()
 	
 	interacted_with.emit()
 	_activation_count += 1

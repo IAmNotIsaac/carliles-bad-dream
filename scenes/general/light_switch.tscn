@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://c3wlamvxgqr38"]
+
+[ext_resource type="PackedScene" uid="uid://b646mgln2fmak" path="res://assets/models/light_switch.glb" id="1_drq3e"]
+[ext_resource type="Script" path="res://scenes/general/light_switch.gd" id="1_l805j"]
+[ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="2_nirrw"]
+[ext_resource type="PackedScene" uid="uid://bhdgdoqje6cgq" path="res://assets/models/light_switch_piece.glb" id="3_40n3q"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jipdx"]
+size = Vector3(0.25, 0.25, 0.25)
+
+[sub_resource type="Animation" id="Animation_4jfpd"]
+resource_name = "turn_off"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("light_switch_piece:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-1.18682, 0, 0), Vector3(1.18682, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_j2a8l"]
+resource_name = "turn_on"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("light_switch_piece:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.18682, 0, 0), Vector3(-1.18682, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rdlpl"]
+_data = {
+"turn_off": SubResource("Animation_4jfpd"),
+"turn_on": SubResource("Animation_j2a8l")
+}
+
+[node name="LightSwitch" type="Node3D"]
+script = ExtResource("1_l805j")
+
+[node name="light_switch" parent="." instance=ExtResource("1_drq3e")]
+
+[node name="light_switch_piece" parent="." instance=ExtResource("3_40n3q")]
+transform = Transform3D(1, 0, 0, 0, 0.374607, 0.927184, 0, -0.927184, 0.374607, 0, 0, 0.015)
+
+[node name="InteractArea" type="Area3D" parent="."]
+script = ExtResource("2_nirrw")
+mode = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.125)
+shape = SubResource("BoxShape3D_jipdx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_rdlpl")
+}
+
+[connection signal="interacted_with" from="InteractArea" to="." method="_on_interact_area_interacted_with"]
