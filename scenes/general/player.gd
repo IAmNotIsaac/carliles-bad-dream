@@ -230,7 +230,7 @@ func _permit_interact() -> void:
 	var col = _interact_cast.get_collider()
 	if col is InteractArea:
 		_reticle.texture = _TEXTURE_RETICLE_HIGHLIGHT
-		if Input.is_action_pressed("interact"):
+		if Input.is_action_pressed("interact") and not Level.is_message_active():
 				col.interact(not Input.is_action_just_pressed("interact"))
 	else:
 		_reticle.texture = _TEXTURE_RETICLE

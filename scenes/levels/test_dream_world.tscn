@@ -1,10 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://ccw5r261rvd"]
+[gd_scene load_steps=16 format=3 uid="uid://ccw5r261rvd"]
 
 [ext_resource type="Script" path="res://scenes/levels/test_dream_world.gd" id="1_lb2it"]
 [ext_resource type="PackedScene" uid="uid://cbtw5u27asug0" path="res://scenes/general/player.tscn" id="1_ouv60"]
 [ext_resource type="PackedScene" uid="uid://bb3emm6ug6ufd" path="res://scenes/tools/camera_target.tscn" id="2_mqkcl"]
 [ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_kjt45"]
 [ext_resource type="Material" uid="uid://8ylcw0h1lkhg" path="res://addons/kenney_prototype_tools/materials/orange/material_01.tres" id="4_4q6jl"]
+[ext_resource type="PackedScene" uid="uid://bmkk1qotb21wy" path="res://scenes/tools/editor_logic.tscn" id="6_y3qxn"]
+[ext_resource type="Script" path="res://scenes/logic/message.gd" id="7_s1511"]
+[ext_resource type="PackedScene" uid="uid://cq1eyjm8m6n81" path="res://scenes/tools/interact_area.tscn" id="8_edhdt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j12s2"]
 sun_curve = 0.369343
@@ -29,6 +32,8 @@ sky_material = SubResource("ProceduralSkyMaterial_j653c")
 [sub_resource type="Environment" id="Environment_odlcf"]
 background_mode = 2
 sky = SubResource("Sky_3mwsp")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k1hcj"]
 
 [node name="TestDreamWorld" type="Node3D"]
 script = ExtResource("1_lb2it")
@@ -64,4 +69,24 @@ material_override = ExtResource("4_4q6jl")
 use_collision = true
 collision_layer = 65536
 collision_mask = 0
-size = Vector3(40, 1, 40)
+size = Vector3(40, 1, 36)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
+layers = 1024
+material_override = ExtResource("4_4q6jl")
+collision_layer = 65536
+collision_mask = 0
+
+[node name="TestMessage" parent="." instance=ExtResource("6_y3qxn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7028, 0)
+script = ExtResource("7_s1511")
+
+[node name="InteractArea" parent="." instance=ExtResource("8_edhdt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
+collision_layer = 262144
+_logic_path = NodePath("../TestMessage")
+mode = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("BoxShape3D_k1hcj")

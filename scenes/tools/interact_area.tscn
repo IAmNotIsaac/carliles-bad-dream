@@ -3,4 +3,5 @@
 [ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="1_y63en"]
 
 [node name="InteractArea" type="Area3D"]
+collision_mask = 0
 script = ExtResource("1_y63en")

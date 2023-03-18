@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bmkk1qotb21wy"]
+
+[ext_resource type="Texture2D" uid="uid://dem5qo1bcoqr1" path="res://assets/textures/logic.png" id="1_ato31"]
+[ext_resource type="Script" path="res://scenes/tools/auto_deleter.gd" id="1_om4ak"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c41vd"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="EditorLogic" type="Node3D"]
+
+[node name="EditorLogicSprite" type="Sprite3D" parent="."]
+billboard = 1
+texture_filter = 0
+texture = ExtResource("1_ato31")
+script = ExtResource("1_om4ak")
+
+[node name="EditorLogicClick" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_c41vd")
+script = ExtResource("1_om4ak")

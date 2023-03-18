@@ -3,7 +3,6 @@ extends Node
 
 signal deferred_input(event : InputEvent)
 
-
 const LEVELS := {
 	"REAL": {
 		"TEST_WORLD": "res://scenes/levels/test_world.tscn",
@@ -13,19 +12,14 @@ const LEVELS := {
 		"TEST_DREAM_WORLD": "res://scenes/levels/test_dream_world.tscn"
 	}
 }
+const DEFAULT_CHARS_PER_SECOND := 12
 
-var _load_paths := {
-	"real": "",
-	"dream": ""
-}
+var _load_paths := { "real": "", "dream": "" }
+var _message_tween : Tween
+var _message_callback : Callable
 
-var root_nodes := {
-	"real": null,
-	"dream": null,
-}
+var root_nodes := { "real": null, "dream": null }
 
-@onready var _ui := $UI
-@onready var _game := $Game
 @onready var _real_world_container := $%RealWorldContainer
 @onready var _real_world_viewport := $%RealWorldViewport
 @onready var _real_progress_bar := $%RealProgressBar
@@ -34,16 +28,24 @@ var root_nodes := {
 @onready var _dream_world_viewport := $%DreamWorldViewport
 @onready var _dream_progress_bar := $%DreamProgressBar
 @onready var _dream_load_screen := $%DreamLoadScreen
-
+@onready var _message_box := $UI/Control/MessageBox
+@onready var _message_text := $UI/Control/MessageBox/TextMargin/Text
+@onready var _message_author := $UI/Control/MessageBox/AuthorMargin/Author
 
 ## Private methods
 
 func _ready() -> void:
-	load_real_world("res://scenes/levels/carlile_room.tscn")
+	_clear_message()
 
 
 func _input(event : InputEvent) -> void:
-	deferred_input.emit(event)
+	if Input.is_action_just_pressed("interact") and is_message_active():
+		if is_message_finished():
+			_close_message()
+		else:
+			_finish_message()
+	else:
+		deferred_input.emit(event)
 
 
 func _process(_delta : float) -> void:
@@ -78,6 +80,27 @@ func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Co
 			root_nodes[root_key] = root
 
 
+func _clear_message() -> void:
+	if _message_tween:
+		_message_tween.kill()
+	
+	_message_box.hide()
+	_message_author.text = ""
+	_message_text.text = ""
+	_message_text.visible_characters = -1
+
+
+func _close_message() -> void:
+	if _message_callback:
+		_message_callback.call()
+	_clear_message()
+
+
+func _finish_message() -> void:
+	_message_tween.kill()
+	_message_text.visible_characters = -1
+
+
 ## Public methods
 
 func load_real_world(path : String) -> void:
@@ -105,3 +128,23 @@ func close_dream_world() -> void:
 	root_nodes.dream = null
 	for c in _dream_world_viewport.get_children(true):
 		c.queue_free()
+
+
+func message(author : String, text : String, chars_per_second : float, callback : Callable) -> void:
+	var text_length := len(text)
+	
+	_clear_message()
+	_message_box.show()
+	_message_author.text = author
+	_message_text.text = text
+	_message_tween = get_tree().create_tween().set_parallel(false)
+	_message_tween.tween_property(_message_text, "visible_characters", text_length, float(text_length) / chars_per_second)
+	_message_callback = callback
+
+
+func is_message_active() -> bool:
+	return _message_box.is_visible()
+
+
+func is_message_finished() -> bool:
+	return _message_text.visible_characters in [len(_message_text.text), -1]

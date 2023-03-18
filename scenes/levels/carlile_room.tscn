@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://d23hsex5h1v4g"]
+[gd_scene load_steps=27 format=3 uid="uid://d23hsex5h1v4g"]
 
 [ext_resource type="PackedScene" uid="uid://daxni8he6dwsm" path="res://assets/models/bed.glb" id="1_7pydp"]
 [ext_resource type="Script" path="res://scenes/levels/carlile_room.gd" id="1_c7cwn"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scenes/logic/visibility_toggler.gd" id="6_30ivq"]
 [ext_resource type="PackedScene" uid="uid://db5bjr4n61wd1" path="res://assets/models/ceiling.glb" id="6_dblcb"]
 [ext_resource type="PackedScene" uid="uid://cq1eyjm8m6n81" path="res://scenes/tools/interact_area.tscn" id="6_oa751"]
+[ext_resource type="PackedScene" uid="uid://bmkk1qotb21wy" path="res://scenes/tools/editor_logic.tscn" id="6_snqt7"]
 [ext_resource type="PackedScene" uid="uid://dtgbl0ex1keaf" path="res://assets/models/floor.glb" id="7_d7pxw"]
 [ext_resource type="PackedScene" uid="uid://dwp8je3u571c0" path="res://assets/models/door_wall.glb" id="11_jkvbc"]
 [ext_resource type="PackedScene" uid="uid://bse0j0ohgsor5" path="res://assets/models/door.glb" id="12_wrcht"]
@@ -89,8 +90,8 @@ scale_amount_curve = SubResource("Curve_ti5jl")
 [node name="Carlile" parent="." instance=ExtResource("4_a8ndr")]
 transform = Transform3D(-0.170753, -0.0457532, -0.176777, 0.170753, 0.0457532, -0.176777, 0.0647048, -0.241481, -2.82834e-09, -2, 0.845797, -3.75003)
 
-[node name="LightToggler" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, -1)
+[node name="LightToggler" parent="." instance=ExtResource("6_snqt7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2)
 script = ExtResource("6_30ivq")
 _target_path = NodePath("../Lights/CeilingLight")
 
