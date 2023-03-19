@@ -7,7 +7,7 @@ signal interacted_with
 enum Mode {
 	CONTINUOUS,
 	DISCRETE,
-	SINGULAR
+	SINGULAR,
 }
 
 const _HOVER_TIME_HINT := 10
@@ -57,3 +57,9 @@ func reset_activation_count() -> void:
 
 func show_hint() -> void:
 	_hovered_time = Time.get_ticks_msec()
+
+
+func can_interact() -> bool:
+	if mode == Mode.SINGULAR:
+		return _activation_count == 0
+	return true

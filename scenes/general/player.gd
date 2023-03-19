@@ -228,7 +228,7 @@ func _air_movement(delta : float) -> void:
 
 func _permit_interact() -> void:
 	var col = _interact_cast.get_collider()
-	if col is InteractArea:
+	if col is InteractArea and col.can_interact():
 		col.show_hint()
 		_reticle.texture = _TEXTURE_RETICLE_HIGHLIGHT
 		if Input.is_action_pressed("interact"):
@@ -510,6 +510,10 @@ func _sl_DEAD() -> void:
 
 
 ## Public methods ##
+
+func set_yaw(degrees : float) -> void:
+	_gimbal.rotation_degrees.y = degrees
+
 
 func damage(damage_data : Damage) -> void:
 	match state:

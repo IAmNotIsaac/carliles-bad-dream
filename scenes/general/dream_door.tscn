@@ -1,0 +1,123 @@
+[gd_scene load_steps=14 format=3 uid="uid://d2131c28xu072"]
+
+[ext_resource type="PackedScene" uid="uid://dwp8je3u571c0" path="res://assets/models/door_wall.glb" id="1_jetdd"]
+[ext_resource type="Script" path="res://scenes/general/dream_door.gd" id="1_s12iq"]
+[ext_resource type="PackedScene" uid="uid://bse0j0ohgsor5" path="res://assets/models/door.glb" id="2_yq0ri"]
+[ext_resource type="Script" path="res://scenes/tools/auto_dream_glb.gd" id="3_0lnff"]
+[ext_resource type="PackedScene" uid="uid://cq1eyjm8m6n81" path="res://scenes/tools/interact_area.tscn" id="5_qsdnt"]
+
+[sub_resource type="Animation" id="Animation_dyf07"]
+resource_name = "open"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hinge:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.297302, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -2.0944, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera3D:fov")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [90.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5xc7x"]
+_data = {
+"open": SubResource("Animation_dyf07")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vwvtj"]
+size = Vector3(0.5, 2.5, 0.25)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vinec"]
+size = Vector3(1, 0.5, 0.25)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wrj0q"]
+size = Vector3(1, 2, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ct268"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tcqvx"]
+material = SubResource("StandardMaterial3D_ct268")
+size = Vector2(1, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dsvlh"]
+size = Vector3(1, 2, 0.5)
+
+[node name="DreamDoor" type="Node3D"]
+script = ExtResource("1_s12iq")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5xc7x")
+}
+
+[node name="door_wall" parent="." instance=ExtResource("1_jetdd")]
+script = ExtResource("3_0lnff")
+
+[node name="Hinge" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, 0)
+
+[node name="door" parent="Hinge" instance=ExtResource("2_yq0ri")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+script = ExtResource("3_0lnff")
+
+[node name="Wall" type="StaticBody3D" parent="."]
+collision_layer = 65536
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 1.25, 0)
+shape = SubResource("BoxShape3D_vwvtj")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1.25, 0)
+shape = SubResource("BoxShape3D_vwvtj")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+shape = SubResource("BoxShape3D_vinec")
+
+[node name="DoorCollision" type="StaticBody3D" parent="."]
+collision_layer = 65536
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_wrj0q")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0)
+layers = 1024
+mesh = SubResource("PlaneMesh_tcqvx")
+
+[node name="InteractArea" parent="." instance=ExtResource("5_qsdnt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 65536
+mode = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
+shape = SubResource("BoxShape3D_dsvlh")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2)
+cull_mask = 1046527
+fov = 90.0
+
+[connection signal="interacted_with" from="InteractArea" to="." method="_on_interact_area_interacted_with"]

@@ -16,6 +16,7 @@ const LEVELS := {
 const DEFAULT_CHARS_PER_SECOND := 12
 
 var _load_paths := { "real": "", "dream": "" }
+var _metadata := { "real": "", "dream": "" }
 var _message_tween : Tween
 var _message_callback : Callable
 var _paused := false
@@ -26,10 +27,12 @@ var root_nodes := { "real": null, "dream": null }
 @onready var _real_world_viewport := $%RealWorldViewport
 @onready var _real_progress_bar := $%RealProgressBar
 @onready var _real_load_screen := $%RealLoadScreen
+@onready var _real_fade_anim := %RealFadeAnim
 @onready var _dream_world_container := $%DreamWorldContainer
 @onready var _dream_world_viewport := $%DreamWorldViewport
 @onready var _dream_progress_bar := $%DreamProgressBar
 @onready var _dream_load_screen := $%DreamLoadScreen
+@onready var _dream_fade_anim := %DreamFadeAnim
 @onready var _message_box := $UI/Root/MessageBox
 @onready var _message_text := $UI/Root/MessageBox/TextMargin/Text
 @onready var _message_author := $UI/Root/MessageBox/AuthorMargin/Author
@@ -56,14 +59,14 @@ func _input(event : InputEvent) -> void:
 
 
 func _process(_delta : float) -> void:
-	_load_level("real", _real_progress_bar, _real_load_screen, _real_world_viewport, "real")
-	_load_level("dream", _dream_progress_bar, _dream_load_screen, _dream_world_viewport, "dream")
+	_load_level("real", _real_progress_bar, _real_load_screen, _real_world_viewport, _real_fade_anim, "real")
+	_load_level("dream", _dream_progress_bar, _dream_load_screen, _dream_world_viewport, _dream_fade_anim, "dream")
 	
 	_real_world_container.set_visible(_real_world_viewport.get_children(true) != [] or _load_paths["real"] != "")
 	_dream_world_container.set_visible(_dream_world_viewport.get_children(true) != [] or _load_paths["dream"] != "")
 
 
-func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Control, viewport_node : Node, root_key : String) -> void:
+func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Control, viewport_node : Node, fade_anim : AnimationPlayer, root_key : String) -> void:
 	var progress := []
 	var load_status := ResourceLoader.load_threaded_get_status(_load_paths[path_key], progress)
 	match load_status:
@@ -85,6 +88,7 @@ func _load_level(path_key : String, progress_bar : ProgressBar, load_screen : Co
 			var root : Node3D = res.instantiate()
 			viewport_node.add_child(root)
 			root_nodes[root_key] = root
+			fade_anim.play("fade_out")
 
 
 func _toggle_pause() -> void:
@@ -123,12 +127,15 @@ func _finish_message() -> void:
 
 ## Public methods
 
-func load_real_world(path : String) -> void:
+func load_real_world(path : String, metadata := {}) -> void:
+	if is_real_world_active():
+		_real_fade_anim.play("fade_in")
+		await _real_fade_anim.animation_finished
 	close_real_world()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	if ResourceLoader.exists(path):
 		_load_paths["real"] = path
-		await get_tree().create_timer(1.0).timeout
+		_metadata["real"] = metadata
 		ResourceLoader.load_threaded_request(path)
 
 
@@ -145,11 +152,15 @@ func is_real_world_active() -> bool:
 	return _real_world_viewport.get_children(true) != []
 
 
-func load_dream_world(path : String) -> void:
+func load_dream_world(path : String, metadata := {}) -> void:
+	if is_dream_world_active():
+		_dream_fade_anim.play("fade_in")
+		await _dream_fade_anim.animation_finished
 	close_dream_world()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	if ResourceLoader.exists(path):
 		_load_paths["dream"] = path
+		_metadata["dream"] = metadata
 		ResourceLoader.load_threaded_request(path)
 
 
@@ -160,6 +171,13 @@ func close_dream_world() -> void:
 	
 	if not is_real_world_active():
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+
+func get_dream_metadata(key : String, default_value):
+	if _metadata.has(key):
+		return _metadata[key]
+	else:
+		return default_value
 
 
 func is_dream_world_active() -> bool:
