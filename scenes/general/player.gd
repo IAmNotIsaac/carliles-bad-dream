@@ -229,9 +229,10 @@ func _air_movement(delta : float) -> void:
 func _permit_interact() -> void:
 	var col = _interact_cast.get_collider()
 	if col is InteractArea:
+		col.show_hint()
 		_reticle.texture = _TEXTURE_RETICLE_HIGHLIGHT
-		if Input.is_action_pressed("interact") and not Level.is_message_active():
-				col.interact(not Input.is_action_just_pressed("interact"))
+		if Input.is_action_pressed("interact"):
+			col.interact(not Input.is_action_just_pressed("interact"))
 	else:
 		_reticle.texture = _TEXTURE_RETICLE
 
@@ -383,7 +384,6 @@ func _sl_DEFAULT() -> void:
 	
 	_stand_collision()
 	_cam.position.y = _CAM_HEIGHT
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	if is_on_floor():
 		state.switch(States.GROUND)

@@ -1,7 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://cq1eyjm8m6n81"]
+[gd_scene load_steps=3 format=3 uid="uid://cq1eyjm8m6n81"]
 
 [ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="1_y63en"]
+[ext_resource type="Texture2D" uid="uid://bchbsa28p5hl0" path="res://assets/textures/mouse_left.png" id="2_0qhpj"]
 
 [node name="InteractArea" type="Area3D"]
 collision_mask = 0
 script = ExtResource("1_y63en")
+
+[node name="Hint" type="Sprite3D" parent="."]
+pixel_size = 0.0025
+billboard = 1
+no_depth_test = true
+fixed_size = true
+texture_filter = 0
+texture = ExtResource("2_0qhpj")

@@ -8,7 +8,7 @@ extends RealWorld
 
 func _on_enter_carlile_dream_interacted_with() -> void:
 	if Level.root_nodes.dream == null:
-		Level.load_dream_world(Level.LEVELS.DREAM.TEST_DREAM_WORLD)
+		Level.load_dream_world(Level.LEVELS.DREAM.DREAM_HUB)
 
 
 func _on_ceiling_light_visibility_changed() -> void:

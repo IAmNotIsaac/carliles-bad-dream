@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://bcdhy88274hkq"]
+[gd_scene load_steps=21 format=3 uid="uid://bcdhy88274hkq"]
 
 [ext_resource type="Script" path="res://scenes/general/main_menu.gd" id="1_aq36x"]
 [ext_resource type="PackedScene" uid="uid://cah7q2eyjp6h0" path="res://assets/models/cloud.glb" id="2_vviub"]
 [ext_resource type="Texture2D" uid="uid://dtqylnojvwrem" path="res://assets/textures/sky_day.png" id="3_rmwqf"]
 [ext_resource type="FontFile" uid="uid://8f1he4kx3v4l" path="res://assets/fonts/jua/Jua-Regular.ttf" id="4_xq5rs"]
+[ext_resource type="AudioStream" uid="uid://bv75mq76nnnt4" path="res://assets/music/what-a-nice-jam.wav" id="5_lkdf3"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ibj3g"]
 panorama = ExtResource("3_rmwqf")
@@ -118,6 +119,66 @@ _data = {
 "enter_clouds": SubResource("Animation_xkdhm")
 }
 
+[sub_resource type="Animation" id="Animation_n5fix"]
+resource_name = "fade_in"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MenuMusic:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-80.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Fade:color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_god5l"]
+resource_name = "fade_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MenuMusic:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -80.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Fade:color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5quuy"]
+_data = {
+"fade_in": SubResource("Animation_n5fix"),
+"fade_out": SubResource("Animation_god5l")
+}
+
 [node name="MainMenu" type="Node3D"]
 script = ExtResource("1_aq36x")
 
@@ -205,7 +266,7 @@ transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -19, 0, 
 current = true
 
 [node name="PlayButton" type="Area3D" parent="."]
-transform = Transform3D(0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, -15, 0.455, -10)
+transform = Transform3D(0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, -15, 0.455, -4)
 metadata/_edit_group_ = true
 
 [node name="cloud" parent="PlayButton" instance=ExtResource("2_vviub")]
@@ -218,10 +279,10 @@ shape = SubResource("BoxShape3D_6a81k")
 text = "Play"
 font = ExtResource("4_xq5rs")
 font_size = 128
-outline_size = 32
+outline_size = 16
 
 [node name="QuitButton" type="Area3D" parent="."]
-transform = Transform3D(0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, -15, -0.777, -10)
+transform = Transform3D(0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, -15, -0.776761, -4)
 metadata/_edit_group_ = true
 
 [node name="cloud" parent="QuitButton" instance=ExtResource("2_vviub")]
@@ -235,10 +296,37 @@ text = "Quit
 "
 font = ExtResource("4_xq5rs")
 font_size = 128
-outline_size = 32
+outline_size = 16
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="CloudsAnimation" type="AnimationPlayer" parent="."]
 autoplay = "enter_clouds"
 libraries = {
 "": SubResource("AnimationLibrary_ljspj")
 }
+
+[node name="MenuMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_lkdf3")
+volume_db = -80.0
+
+[node name="MusicAndFadeAnimation" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5quuy")
+}
+
+[node name="Fade" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -12, 4, 0)
+
+[node name="Label3D" type="Label3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+text = "Carlile's Good Night"
+font = ExtResource("4_xq5rs")
+font_size = 256
+outline_size = 32

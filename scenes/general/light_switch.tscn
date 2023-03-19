@@ -2,11 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://b646mgln2fmak" path="res://assets/models/light_switch.glb" id="1_drq3e"]
 [ext_resource type="Script" path="res://scenes/general/light_switch.gd" id="1_l805j"]
-[ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="2_nirrw"]
 [ext_resource type="PackedScene" uid="uid://bhdgdoqje6cgq" path="res://assets/models/light_switch_piece.glb" id="3_40n3q"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_jipdx"]
-size = Vector3(0.25, 0.25, 0.25)
+[ext_resource type="PackedScene" uid="uid://cq1eyjm8m6n81" path="res://scenes/tools/interact_area.tscn" id="4_8qdvo"]
 
 [sub_resource type="Animation" id="Animation_4jfpd"]
 resource_name = "turn_off"
@@ -46,25 +43,28 @@ _data = {
 "turn_on": SubResource("Animation_j2a8l")
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_jipdx"]
+size = Vector3(0.25, 0.25, 0.25)
+
 [node name="LightSwitch" type="Node3D"]
 script = ExtResource("1_l805j")
 
 [node name="light_switch" parent="." instance=ExtResource("1_drq3e")]
 
 [node name="light_switch_piece" parent="." instance=ExtResource("3_40n3q")]
-transform = Transform3D(1, 0, 0, 0, 0.374607, 0.927184, 0, -0.927184, 0.374607, 0, 0, 0.015)
-
-[node name="InteractArea" type="Area3D" parent="."]
-script = ExtResource("2_nirrw")
-mode = 1
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.125)
-shape = SubResource("BoxShape3D_jipdx")
+transform = Transform3D(1, 0, 0, 0, 0.37461, -0.927183, 0, 0.927183, 0.37461, 0, 0, 0.015)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_rdlpl")
 }
+
+[node name="InteractArea" parent="." instance=ExtResource("4_8qdvo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+mode = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.125)
+shape = SubResource("BoxShape3D_jipdx")
 
 [connection signal="interacted_with" from="InteractArea" to="." method="_on_interact_area_interacted_with"]

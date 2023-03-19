@@ -4,7 +4,7 @@ extends Logic
 @export var _author : String
 @export_multiline var _message : String
 @export var _chars_per_second := 20.0
-@export var _override_message := true
+@export var _override_message := false
 @export_node_path("Logic") var _next_path : NodePath
 
 

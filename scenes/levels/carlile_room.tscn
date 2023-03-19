@@ -7,12 +7,12 @@
 [ext_resource type="PackedScene" uid="uid://cbtw5u27asug0" path="res://scenes/general/player.tscn" id="3_deyno"]
 [ext_resource type="PackedScene" uid="uid://bkcm367dioe5h" path="res://scenes/general/dynamic_camera.tscn" id="3_ifmub"]
 [ext_resource type="PackedScene" uid="uid://cu3agytdyvgsw" path="res://assets/models/carlile.glb" id="4_a8ndr"]
-[ext_resource type="Script" path="res://scenes/tools/interact_area.gd" id="5_0lhna"]
 [ext_resource type="Script" path="res://scenes/logic/visibility_toggler.gd" id="6_30ivq"]
 [ext_resource type="PackedScene" uid="uid://db5bjr4n61wd1" path="res://assets/models/ceiling.glb" id="6_dblcb"]
 [ext_resource type="PackedScene" uid="uid://bmkk1qotb21wy" path="res://scenes/tools/editor_logic.tscn" id="6_snqt7"]
 [ext_resource type="PackedScene" uid="uid://dtgbl0ex1keaf" path="res://assets/models/floor.glb" id="7_d7pxw"]
 [ext_resource type="PackedScene" uid="uid://c3wlamvxgqr38" path="res://scenes/general/light_switch.tscn" id="8_2l8f0"]
+[ext_resource type="PackedScene" uid="uid://cq1eyjm8m6n81" path="res://scenes/tools/interact_area.tscn" id="9_rsq6d"]
 [ext_resource type="PackedScene" uid="uid://dwp8je3u571c0" path="res://assets/models/door_wall.glb" id="11_jkvbc"]
 [ext_resource type="PackedScene" uid="uid://bse0j0ohgsor5" path="res://assets/models/door.glb" id="12_wrcht"]
 [ext_resource type="PackedScene" uid="uid://cboxgrstlepby" path="res://assets/models/light.glb" id="13_rtgam"]
@@ -96,9 +96,8 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 2.9, 1
 _logic_path = NodePath("../LightToggler")
 _start_off = true
 
-[node name="EnterCarlileDream" type="Area3D" parent="."]
+[node name="EnterCarlileDream" parent="." instance=ExtResource("9_rsq6d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, -4)
-script = ExtResource("5_0lhna")
 mode = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="EnterCarlileDream"]

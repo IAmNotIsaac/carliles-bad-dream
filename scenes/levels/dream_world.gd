@@ -39,6 +39,12 @@ func _update_environment() -> void:
 
 ## Public methods
 
+func is_light() -> bool:
+	return environment_mode == EnvironmentMode.LIGHT
+
+func is_dark() -> bool:
+	return environment_mode == EnvironmentMode.DARK
+
 func toggle_light() -> void:
 	match environment_mode:
 		EnvironmentMode.LIGHT:
